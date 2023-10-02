@@ -1,7 +1,8 @@
 {
 	"compilerOptions": {
+		"forceConsistentCasingInFileNames": true,
 		"target": "ESNext",
-		"moduleResolution": "NodeNext",
+		"moduleResolution": "Node",
 		"esModuleInterop": true,
 		"module": "ESNext",
 		"strict": true,
