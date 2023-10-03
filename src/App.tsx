@@ -2,34 +2,30 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-	const [linkedInURL, setLinkedInURL] = useState<string>("");
-	const [person, setPerson] = useState<Person | undefined>({
-		name: "Zahid Din",
-		linkedInURL: "https://www.linkedin.com/in/zahid-din-3787887/",
-		bio: "Zahid is the technology evangelist at Computacenter and manager of the Solutions Center team. He is responsible for creating and demonstrating showcases along with the Solutions Center team. He is also responsible for the technical enablement of the sales team and customers. He has been working in the IT industry for over 20 years and has a wealth of experience in the design and implementation of IT solutions. He has worked in a variety of roles including pre-sales, consultancy, and support. He has a passion for technology and enjoys sharing his knowledge with others.",
-		email: "zahid.din@computacenter.com",
-		photoURL: "http://imageurl.com",
-	});
+	const [linkedInURL, setLinkedInURL] = useState<string>("https://www.linkedin.com/in/zahid-din-3787887/");
+	const [person, setPerson] = useState<Person | undefined>();
 
 	interface Person {
 		name: string;
 		email?: string;
 		linkedInURL: string;
-		photoURL?: string;
+		profilePic?: string;
 		bio?: string;
 	}
 
 	async function onSubmit() {
-		const res = await fetch("/screenshot", {
+		const res = await fetch("/scrape", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({ url: linkedInURL }),
 		});
-		// const data = await res.arrayBuffer();
-		console.log(res.headers.get("Content-Type"));
-		const data = await res.blob();
+		if (!res.ok) throw new Error("Something went wrong");
+		const data = await res.json();
+		console.log(data);
+		setPerson({ ...data, linkedInURL });
+		console.log(person);
 	}
 
 	return (
@@ -39,6 +35,7 @@ function App() {
 					className="border-2 border-gray-300 bg-white h-10 w-96 px-2 rounded-lg text-sm focus:outline-none"
 					title="linkedInURL"
 					type="text"
+					placeholder={`https://www.linkedin.com/in/zahid-din-3787887/`}
 					onChange={e => setLinkedInURL(e.target.value)}
 				/>
 				<button
@@ -67,7 +64,7 @@ function App() {
 						<h1 className="font-bold">Photo</h1>
 						<img
 							alt="Profile pic"
-							src={"https://picsum.photos/300/300"}
+							src={`data:image/png;base64, ${person.profilePic}`}
 						/>
 					</div>
 					<div className="w-96 flex flex-col items-center">
